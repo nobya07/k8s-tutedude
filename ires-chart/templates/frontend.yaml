@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ires-frontend
+  namespace: gajendra
+  lables:
+    ram: {{ .Values.num }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ires-frontend
+  template:
+    metadata:
+      labels:
+        app: ires-frontend
+    spec:
+      containers:
+      - name: ires-frontend
+        image: docker.io/gajendra1/ires-frontend
+        ports:
+        - containerPort: 9000
+        env:
+        - name: BACKEND_URL
+          value: "http://ires-backend:8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ires-frontend
+  namespace: gajendra
+spec:
+  selector:
+    app: ires-frontend
+  ports:
+  - port: 80
+    targetPort: 9000
+  type: ClusterIP

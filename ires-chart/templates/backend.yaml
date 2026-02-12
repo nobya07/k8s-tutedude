@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ires-backend
+  namespace: gajendra
+  lables:
+    ram: {{ .Values.num }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ires-backend
+  template:
+    metadata:
+      labels:
+        app: ires-backend
+    spec:
+      containers:
+      - name: ires-backend
+        image: gajendra1/ires-backend
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_HOST
+          value: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ires-backend
+  namespace: gajendra
+spec:
+  selector:
+    app: ires-backend
+  ports:
+  - port: 8000
+    targetPort: 8000
